@@ -57,8 +57,13 @@ All colors MUST be HSL.
 
     /* 状态色 */
     --success: 152 55% 45%;
-    --warning: 40 95% 55%;
+    --warning: 30 90% 55%;
     --pending: 220 15% 70%;
+
+    /* 圆环进度渐变色 */
+    --ring-start: 30 90% 60%;
+    --ring-mid: 35 85% 55%;
+    --ring-end: 152 55% 50%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
