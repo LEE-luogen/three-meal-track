@@ -1,14 +1,17 @@
-import { FastingHeader } from "@/components/fasting/FastingHeader";
+import { FastingCard } from "@/components/fasting/FastingCard";
 import { MealTimeline } from "@/components/fasting/MealTimeline";
 import { AISummaryCard } from "@/components/fasting/AISummaryCard";
 
 const Index = () => {
   // 示例数据
   const fastingData = {
-    fastingHours: 14,
-    fastingMinutes: 32,
+    fastingHours: 0,
+    fastingMinutes: 0,
+    fastingSeconds: 3,
     targetHours: 16,
     isInFastingWindow: true,
+    startTime: "今天 19:30",
+    endTime: "明天 11:30",
   };
 
   const mealsData = {
@@ -59,7 +62,7 @@ const Index = () => {
         </div>
 
         {/* 断食状态卡片 */}
-        <FastingHeader {...fastingData} />
+        <FastingCard {...fastingData} />
 
         {/* 三餐时间轴 */}
         <div>
