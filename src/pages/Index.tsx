@@ -1,6 +1,9 @@
 import { FastingCard } from "@/components/fasting/FastingCard";
 import { MealTimeline } from "@/components/fasting/MealTimeline";
 import { AISummaryCard } from "@/components/fasting/AISummaryCard";
+import { BottomNavigation } from "@/components/navigation/BottomNavigation";
+import { PaywallModal } from "@/components/modals/PaywallModal";
+import { CameraModal } from "@/components/modals/CameraModal";
 
 const Index = () => {
   // 示例数据
@@ -42,12 +45,12 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* 顶部安全区域 */}
       <div className="h-12" />
 
       {/* 主内容区 */}
-      <div className="px-4 pb-8 max-w-md mx-auto space-y-5">
+      <div className="px-4 max-w-md mx-auto space-y-5">
         {/* 页面标题 */}
         <div className="flex items-center justify-between">
           <div>
@@ -78,6 +81,13 @@ const Index = () => {
         {/* AI 分析卡片 */}
         <AISummaryCard {...aiSummary} />
       </div>
+
+      {/* 底部导航 */}
+      <BottomNavigation />
+
+      {/* 弹层组件 */}
+      <PaywallModal />
+      <CameraModal />
     </div>
   );
 };
