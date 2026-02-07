@@ -65,6 +65,16 @@ All colors MUST be HSL.
     --ring-mid: 35 85% 55%;
     --ring-end: 152 55% 50%;
 
+    /* Onboarding 专用色彩 */
+    --onboarding-background: 30 100% 97%;
+    --onboarding-card: 0 0% 100%;
+    --onboarding-primary: 30 90% 55%;
+    --onboarding-accent: 25 95% 53%;
+    --onboarding-cta: 217 91% 60%;
+    --onboarding-divider: 220 14% 96%;
+    --onboarding-text: 220 43% 11%;
+    --onboarding-secondary: 220 9% 46%;
+
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 152 55% 45%;
@@ -123,6 +133,16 @@ All colors MUST be HSL.
     --success: 152 50% 50%;
     --warning: 40 85% 55%;
     --pending: 220 15% 50%;
+
+    /* Onboarding 专用色彩 - 暗色模式 */
+    --onboarding-background: 220 25% 10%;
+    --onboarding-card: 220 25% 14%;
+    --onboarding-primary: 30 80% 60%;
+    --onboarding-accent: 25 90% 55%;
+    --onboarding-cta: 217 85% 55%;
+    --onboarding-divider: 220 20% 22%;
+    --onboarding-text: 150 15% 95%;
+    --onboarding-secondary: 220 10% 60%;
 
     --sidebar-background: 220 25% 10%;
     --sidebar-foreground: 150 15% 95%;
