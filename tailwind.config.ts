@@ -81,6 +81,17 @@ export default {
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         pending: "hsl(var(--pending))",
+        // Onboarding 专用色
+        onboarding: {
+          background: "hsl(var(--onboarding-background))",
+          card: "hsl(var(--onboarding-card))",
+          primary: "hsl(var(--onboarding-primary))",
+          accent: "hsl(var(--onboarding-accent))",
+          cta: "hsl(var(--onboarding-cta))",
+          divider: "hsl(var(--onboarding-divider))",
+          text: "hsl(var(--onboarding-text))",
+          secondary: "hsl(var(--onboarding-secondary))",
+        },
       },
       borderRadius: {
         "2xl": "1.25rem",
@@ -118,6 +129,10 @@ export default {
           from: { opacity: "0", transform: "scale(0.95)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
+        "fade-in": {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -125,6 +140,7 @@ export default {
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
         "slide-up": "slide-up 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
+        "fade-in": "fade-in 0.3s ease-out",
       },
     },
   },
