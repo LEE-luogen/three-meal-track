@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { FastingCard } from "@/components/fasting/FastingCard";
 import { MealTimeline } from "@/components/fasting/MealTimeline";
 import { AISummaryCard } from "@/components/fasting/AISummaryCard";
@@ -6,6 +7,13 @@ import { PaywallModal } from "@/components/modals/PaywallModal";
 import { CameraModal } from "@/components/modals/CameraModal";
 import { FastingCompleteSheet } from "@/components/fasting/FastingCompleteSheet";
 import { EarlyEndDrawer } from "@/components/fasting/EarlyEndDrawer";
+import { StartFastingDrawer } from "@/components/fasting/StartFastingDrawer";
+import { EndFastingConfirmDrawer } from "@/components/fasting/EndFastingConfirmDrawer";
+import { EarlyEndResultSheet } from "@/components/fasting/EarlyEndResultSheet";
+import { FastingRecordDrawer } from "@/components/fasting/FastingRecordDrawer";
+import { TimeConflictAlert } from "@/components/fasting/TimeConflictAlert";
+import { MealDetailDrawer } from "@/components/fasting/MealDetailDrawer";
+import { DeleteMealAlert } from "@/components/fasting/DeleteMealAlert";
 import { useFastingStore } from "@/stores/fastingStore";
 import { toast } from "@/hooks/use-toast";
 
@@ -20,13 +28,23 @@ const Index = () => {
     endFasting,
     newBadge,
   } = useFastingStore();
+
+  // 新增的抽屉/弹框状态
+  const [showStartFasting, setShowStartFasting] = useState(false);
+  const [showEndConfirm, setShowEndConfirm] = useState(false);
+  const [showEarlyEndResult, setShowEarlyEndResult] = useState(false);
+  const [showFastingRecord, setShowFastingRecord] = useState(false);
+  const [showTimeConflict, setShowTimeConflict] = useState(false);
+  const [showMealDetail, setShowMealDetail] = useState(false);
+  const [showDeleteMeal, setShowDeleteMeal] = useState(false);
+
   // 示例数据 - 修改 fastingHours/Minutes 来测试不同场景：
   // 场景1: hours >= 16 → 显示完成庆祝卡
   // 场景2: hours < 16 但 > 0.5小时 → 显示提前结束抽屉
   // 场景3: < 30分钟 → Toast提示时间过短
   const fastingData = {
-    fastingHours: 16,  // 改成 8 测试提前结束，改成 16+ 测试完成
-    fastingMinutes: 2,
+    fastingHours: 8,  // 改成 8 测试提前结束，改成 16+ 测试完成
+    fastingMinutes: 15,
     fastingSeconds: 45,
     targetHours: 16,
     isInFastingWindow: true,
@@ -61,6 +79,16 @@ const Index = () => {
       "今日热量控制良好，请继续保持。建议晚餐保持清淡，避免过晚进食，有助于夜间代谢与睡眠质量。",
   };
 
+  // 示例餐食数据
+  const sampleMeal = {
+    id: '1',
+    name: '牛油果鸡蛋吐司',
+    time: '07:21',
+    calories: 275,
+    note: '配了一杯黑咖啡',
+    type: 'breakfast' as const,
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* 顶部安全区域 */}
@@ -78,6 +106,55 @@ const Index = () => {
           </div>
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-semibold text-sm">
             李
+          </div>
+        </div>
+
+        {/* 测试入口按钮组 */}
+        <div className="bg-card rounded-2xl p-4 shadow-card">
+          <p className="text-sm text-muted-foreground mb-3">测试交互组件：</p>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => setShowStartFasting(true)}
+              className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm hover:bg-primary/20 transition-colors"
+            >
+              开始断食
+            </button>
+            <button
+              onClick={() => setShowEndConfirm(true)}
+              className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm hover:bg-primary/20 transition-colors"
+            >
+              结束确认
+            </button>
+            <button
+              onClick={() => setShowEarlyEndResult(true)}
+              className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm hover:bg-primary/20 transition-colors"
+            >
+              提前结束结果
+            </button>
+            <button
+              onClick={() => setShowFastingRecord(true)}
+              className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm hover:bg-primary/20 transition-colors"
+            >
+              补录断食
+            </button>
+            <button
+              onClick={() => setShowTimeConflict(true)}
+              className="px-3 py-2 bg-warning/10 text-warning rounded-lg text-sm hover:bg-warning/20 transition-colors"
+            >
+              时间冲突
+            </button>
+            <button
+              onClick={() => setShowMealDetail(true)}
+              className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm hover:bg-primary/20 transition-colors"
+            >
+              餐食详情
+            </button>
+            <button
+              onClick={() => setShowDeleteMeal(true)}
+              className="px-3 py-2 bg-destructive/10 text-destructive rounded-lg text-sm hover:bg-destructive/20 transition-colors col-span-2"
+            >
+              删除餐食
+            </button>
           </div>
         </div>
 
@@ -124,11 +201,10 @@ const Index = () => {
         onViewDetails={() => {
           endFasting();
           setShowFastingComplete(false);
-          // TODO: 跳转到历史页面
         }}
       />
 
-      {/* 提前结束确认抽屉 */}
+      {/* 提前结束确认抽屉（旧版） */}
       <EarlyEndDrawer
         open={showEarlyEndConfirm}
         onOpenChange={setShowEarlyEndConfirm}
@@ -145,6 +221,120 @@ const Index = () => {
             description: `${fastingData.fastingHours}小时${fastingData.fastingMinutes}分钟，下次继续加油！`,
           });
         }}
+      />
+
+      {/* ========== 新增组件 ========== */}
+
+      {/* 开始断食设置抽屉 */}
+      <StartFastingDrawer
+        open={showStartFasting}
+        onOpenChange={setShowStartFasting}
+        onStart={(plan, startTime, endTime) => {
+          toast({
+            title: "断食已开始",
+            description: `${plan} 计划，预计 ${endTime.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })} 结束`,
+          });
+        }}
+      />
+
+      {/* 结束断食确认抽屉（新版） */}
+      <EndFastingConfirmDrawer
+        open={showEndConfirm}
+        onOpenChange={setShowEndConfirm}
+        currentDuration={{
+          hours: fastingData.fastingHours,
+          minutes: fastingData.fastingMinutes,
+        }}
+        targetHours={targetHours}
+        onContinue={() => setShowEndConfirm(false)}
+        onConfirmEnd={(reason) => {
+          setShowEndConfirm(false);
+          // 根据是否达标显示不同结果
+          if (fastingData.fastingHours >= targetHours) {
+            setShowFastingComplete(true);
+          } else {
+            setShowEarlyEndResult(true);
+          }
+        }}
+      />
+
+      {/* 提前结束结果全屏卡 */}
+      <EarlyEndResultSheet
+        open={showEarlyEndResult}
+        onOpenChange={setShowEarlyEndResult}
+        fastingDuration={{
+          hours: fastingData.fastingHours,
+          minutes: fastingData.fastingMinutes,
+        }}
+        targetHours={targetHours}
+        onStartEating={() => {
+          setShowEarlyEndResult(false);
+          toast({
+            title: "进入进食窗口",
+            description: "开始记录你的饮食吧",
+          });
+        }}
+        onAdjustPlan={() => {
+          setShowEarlyEndResult(false);
+          setShowStartFasting(true);
+        }}
+      />
+
+      {/* 补录/编辑断食表单抽屉 */}
+      <FastingRecordDrawer
+        open={showFastingRecord}
+        onOpenChange={setShowFastingRecord}
+        mode="add"
+        onSave={(data) => {
+          const duration = (data.endTime.getTime() - data.startTime.getTime()) / (1000 * 60 * 60);
+          toast({
+            title: "补录成功",
+            description: `已记录 ${duration.toFixed(1)} 小时断食`,
+          });
+        }}
+        onConflict={(conflictInfo) => {
+          setShowFastingRecord(false);
+          setShowTimeConflict(true);
+        }}
+      />
+
+      {/* 时间冲突提示弹框 */}
+      <TimeConflictAlert
+        open={showTimeConflict}
+        onOpenChange={setShowTimeConflict}
+        conflictTimeRange="08:00-16:00"
+        onModify={() => {
+          setShowFastingRecord(true);
+        }}
+        onCancel={() => {}}
+      />
+
+      {/* 餐食详情抽屉 */}
+      <MealDetailDrawer
+        open={showMealDetail}
+        onOpenChange={setShowMealDetail}
+        meal={sampleMeal}
+        onEdit={() => {
+          toast({ title: "编辑餐食", description: "进入编辑模式" });
+        }}
+        onDelete={() => {
+          setShowMealDetail(false);
+          setShowDeleteMeal(true);
+        }}
+      />
+
+      {/* 删除餐食二次确认弹框 */}
+      <DeleteMealAlert
+        open={showDeleteMeal}
+        onOpenChange={setShowDeleteMeal}
+        mealName={sampleMeal.name}
+        onConfirm={() => {
+          toast({
+            title: "已删除",
+            description: `「${sampleMeal.name}」已被删除`,
+          });
+        }}
+        onCancel={() => {}}
       />
     </div>
   );
