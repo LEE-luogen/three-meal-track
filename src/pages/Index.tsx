@@ -20,11 +20,14 @@ const Index = () => {
     endFasting,
     newBadge,
   } = useFastingStore();
-  // 示例数据
+  // 示例数据 - 修改 fastingHours/Minutes 来测试不同场景：
+  // 场景1: hours >= 16 → 显示完成庆祝卡
+  // 场景2: hours < 16 但 > 0.5小时 → 显示提前结束抽屉
+  // 场景3: < 30分钟 → Toast提示时间过短
   const fastingData = {
-    fastingHours: 0,
-    fastingMinutes: 0,
-    fastingSeconds: 3,
+    fastingHours: 16,  // 改成 8 测试提前结束，改成 16+ 测试完成
+    fastingMinutes: 2,
+    fastingSeconds: 45,
     targetHours: 16,
     isInFastingWindow: true,
     startTime: "今天 19:30",
