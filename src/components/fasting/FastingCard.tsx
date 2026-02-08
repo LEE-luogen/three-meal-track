@@ -1,5 +1,7 @@
 import { CircularProgress } from "./CircularProgress";
 import { Calendar, Pencil, Square } from "lucide-react";
+import { useFastingStore } from "@/stores/fastingStore";
+import { toast } from "@/hooks/use-toast";
 
 interface FastingCardProps {
   fastingHours: number;
@@ -20,6 +22,26 @@ export function FastingCard({
   startTime = "今天 19:30",
   endTime = "明天 11:30",
 }: FastingCardProps) {
+  const { setShowFastingComplete, setShowEarlyEndConfirm } = useFastingStore();
+
+  const handleEndFasting = () => {
+    const totalMinutes = fastingHours * 60 + fastingMinutes;
+    const targetMinutes = targetHours * 60;
+
+    if (totalMinutes >= targetMinutes) {
+      // 达成目标 → 显示全屏庆祝卡
+      setShowFastingComplete(true);
+    } else if (totalMinutes > 30) {
+      // 超过30分钟但未达标 → 显示确认抽屉
+      setShowEarlyEndConfirm(true);
+    } else {
+      // 少于30分钟 → Toast 提示
+      toast({
+        title: "断食时间过短",
+        description: "断食需超过30分钟才会被记录",
+      });
+    }
+  };
   return (
     <div className="bg-card rounded-2xl shadow-card animate-slide-up overflow-hidden">
       {/* 顶部导航 */}
@@ -97,7 +119,10 @@ export function FastingCard({
 
       {/* 结束断食按钮 */}
       <div className="px-5 pb-5">
-        <button className="w-full py-4 bg-foreground text-background rounded-2xl font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
+        <button
+          onClick={handleEndFasting}
+          className="w-full py-4 bg-foreground text-background rounded-2xl font-medium flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        >
           <Square className="w-4 h-4" />
           结束断食
         </button>

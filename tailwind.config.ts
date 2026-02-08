@@ -133,6 +133,11 @@ export default {
           from: { opacity: "0" },
           to: { opacity: "1" },
         },
+        "star-fall": {
+          "0%": { opacity: "0", transform: "translateY(-20px) rotate(0deg)" },
+          "20%": { opacity: "1" },
+          "100%": { opacity: "0", transform: "translateY(80px) rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -141,6 +146,7 @@ export default {
         "slide-up": "slide-up 0.4s ease-out",
         "scale-in": "scale-in 0.3s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
+        "star-fall": "star-fall 1.5s ease-out forwards",
       },
     },
   },

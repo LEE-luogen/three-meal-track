@@ -4,8 +4,22 @@ import { AISummaryCard } from "@/components/fasting/AISummaryCard";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { PaywallModal } from "@/components/modals/PaywallModal";
 import { CameraModal } from "@/components/modals/CameraModal";
+import { FastingCompleteSheet } from "@/components/fasting/FastingCompleteSheet";
+import { EarlyEndDrawer } from "@/components/fasting/EarlyEndDrawer";
+import { useFastingStore } from "@/stores/fastingStore";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const {
+    showFastingComplete,
+    setShowFastingComplete,
+    showEarlyEndConfirm,
+    setShowEarlyEndConfirm,
+    planType,
+    targetHours,
+    endFasting,
+    newBadge,
+  } = useFastingStore();
   // 示例数据
   const fastingData = {
     fastingHours: 0,
@@ -88,6 +102,47 @@ const Index = () => {
       {/* 弹层组件 */}
       <PaywallModal />
       <CameraModal />
+
+      {/* 断食完成全屏卡 */}
+      <FastingCompleteSheet
+        open={showFastingComplete}
+        onOpenChange={setShowFastingComplete}
+        fastingDuration={{
+          hours: fastingData.fastingHours,
+          minutes: fastingData.fastingMinutes,
+        }}
+        targetHours={targetHours}
+        planType={planType}
+        newBadge={newBadge}
+        onStartEating={() => {
+          endFasting();
+          setShowFastingComplete(false);
+        }}
+        onViewDetails={() => {
+          endFasting();
+          setShowFastingComplete(false);
+          // TODO: 跳转到历史页面
+        }}
+      />
+
+      {/* 提前结束确认抽屉 */}
+      <EarlyEndDrawer
+        open={showEarlyEndConfirm}
+        onOpenChange={setShowEarlyEndConfirm}
+        currentDuration={{
+          hours: fastingData.fastingHours,
+          minutes: fastingData.fastingMinutes,
+        }}
+        targetHours={targetHours}
+        onContinue={() => setShowEarlyEndConfirm(false)}
+        onConfirmEnd={(reason) => {
+          endFasting(reason);
+          toast({
+            title: "已记录本次断食",
+            description: `${fastingData.fastingHours}小时${fastingData.fastingMinutes}分钟，下次继续加油！`,
+          });
+        }}
+      />
     </div>
   );
 };
