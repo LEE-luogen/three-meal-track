@@ -11,6 +11,7 @@ import { ClearDataModal } from "@/components/modals/ClearDataModal";
 import { ContactModal } from "@/components/modals/ContactModal";
 import { PaywallModal } from "@/components/modals/PaywallModal";
 import { CameraModal } from "@/components/modals/CameraModal";
+import { WeightCurveCard } from "@/components/fasting/WeightCurveCard";
 
 const ProfilePage = () => {
   const {
@@ -133,7 +134,6 @@ const ProfilePage = () => {
               <span className="text-lg">📊</span>
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">代谢年龄</h3>
               <p className="text-xs text-muted-foreground">身心能量仪表盘</p>
             </div>
             <div className="ml-auto text-right">
@@ -179,6 +179,13 @@ const ProfilePage = () => {
             </div>
           </div>
         </Card>
+
+        {/* 体重变化曲线 */}
+        <WeightCurveCard
+          onAddWeight={(weight) => {
+            console.log('添加体重:', weight);
+          }}
+        />
       </div>
 
       {/* 底部导航 */}

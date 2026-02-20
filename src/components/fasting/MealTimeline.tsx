@@ -10,6 +10,7 @@ interface MealData {
   foodName?: string;
   calories?: number;
   tags?: string[];
+  isLoading?: boolean;
 }
 
 interface MealTimelineProps {
@@ -30,6 +31,7 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         calories={breakfast.calories}
         imageUrl={breakfast.status === "recorded" ? breakfastImg : undefined}
         tags={breakfast.tags}
+        isLoading={breakfast.isLoading}
       />
 
       {/* 连接线 早餐->午餐 */}
@@ -49,6 +51,7 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         calories={lunch.calories}
         imageUrl={lunch.status === "recorded" ? lunchImg : undefined}
         tags={lunch.tags}
+        isLoading={lunch.isLoading}
       />
 
       {/* 连接线 午餐->晚餐 */}
@@ -68,6 +71,7 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         calories={dinner.calories}
         imageUrl={dinner.status === "recorded" ? dinnerImg : undefined}
         tags={dinner.tags}
+        isLoading={dinner.isLoading}
       />
     </div>
   );

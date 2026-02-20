@@ -1,4 +1,4 @@
-import { ChevronRight, Plus, Clock, Flame } from "lucide-react";
+import { Plus, Clock, Flame, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type MealType = "breakfast" | "lunch" | "dinner";
@@ -12,6 +12,7 @@ interface MealCardProps {
   calories?: number;
   imageUrl?: string;
   tags?: string[];
+  isLoading?: boolean;
   onClick?: () => void;
 }
 
@@ -44,12 +45,48 @@ export function MealCard({
   calories,
   imageUrl,
   tags,
+  isLoading,
   onClick,
 }: MealCardProps) {
   const config = mealConfig[type];
   const isRecorded = status === "recorded";
   const isPending = status === "pending";
   const isActive = status === "active";
+
+  if (isLoading) {
+    return (
+      <div className="relative rounded-2xl p-4 bg-card shadow-card animate-pulse">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{config.icon}</span>
+            <span className={cn(
+              "text-sm font-semibold",
+              type === "breakfast" && "text-breakfast-foreground",
+              type === "lunch" && "text-lunch-foreground",
+              type === "dinner" && "text-dinner-foreground"
+            )}>
+              {config.label}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            <span>AI 识别中...</span>
+          </div>
+        </div>
+        <div className="flex gap-3">
+          <div className="w-16 h-16 rounded-xl bg-muted animate-pulse" />
+          <div className="flex-1 space-y-2 py-1">
+            <div className="h-4 bg-muted rounded-lg w-3/4" />
+            <div className="h-3 bg-muted rounded-lg w-1/2" />
+            <div className="flex gap-1 mt-1">
+              <div className="h-5 bg-muted rounded-full w-14" />
+              <div className="h-5 bg-muted rounded-full w-16" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -157,7 +194,7 @@ export function MealCard({
               </div>
             )}
           </div>
-          <ChevronRight className="w-5 h-5 text-muted-foreground self-center flex-shrink-0" />
+          
         </div>
       ) : (
         /* 待记录状态 - 显示添加提示 */
