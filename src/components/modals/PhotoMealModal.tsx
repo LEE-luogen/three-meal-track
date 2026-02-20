@@ -18,22 +18,16 @@ const mealOptions: { type: MealType; label: string; icon: string }[] = [
 
 export function PhotoMealModal({ open, onOpenChange, onPhotoTaken }: PhotoMealModalProps) {
   const [selectedMeal, setSelectedMeal] = useState<MealType | null>(null);
-  const [step, setStep] = useState<"select" | "capture">("select");
 
   const handleClose = () => {
     onOpenChange(false);
     setTimeout(() => {
       setSelectedMeal(null);
-      setStep("select");
     }, 300);
   };
 
   const handleMealSelect = (type: MealType) => {
     setSelectedMeal(type);
-  };
-
-  const handleNext = () => {
-    if (selectedMeal) setStep("capture");
   };
 
   const handleCapture = (source: "camera" | "album") => {
@@ -69,89 +63,62 @@ export function PhotoMealModal({ open, onOpenChange, onPhotoTaken }: PhotoMealMo
         </button>
 
         <div className="px-6 pb-8">
-          {step === "select" ? (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-1">AI 食物识别</h3>
-              <p className="text-sm text-muted-foreground mb-5">选择要记录的餐次</p>
+          <h3 className="text-lg font-semibold text-foreground mb-1">AI 食物识别</h3>
+          <p className="text-sm text-muted-foreground mb-5">选择用餐时段，拍照或上传食物图片</p>
 
-              {/* 三餐选择 */}
-              <div className="grid grid-cols-3 gap-3 mb-6">
-                {mealOptions.map((meal) => (
-                  <button
-                    key={meal.type}
-                    onClick={() => handleMealSelect(meal.type)}
-                    className={cn(
-                      "relative flex flex-col items-center gap-2 py-4 rounded-2xl border-2 transition-all",
-                      selectedMeal === meal.type
-                        ? "border-primary bg-primary/5 shadow-md"
-                        : "border-border bg-card hover:border-primary/30"
-                    )}
-                  >
-                    <span className="text-2xl">{meal.icon}</span>
-                    <span className={cn(
-                      "text-sm font-medium",
-                      selectedMeal === meal.type ? "text-primary" : "text-foreground"
-                    )}>
-                      {meal.label}
-                    </span>
-                    {selectedMeal === meal.type && (
-                      <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                        <Check className="w-3 h-3 text-primary-foreground" />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-
+          {/* 三餐选择 */}
+          <div className="grid grid-cols-3 gap-3 mb-6">
+            {mealOptions.map((meal) => (
               <button
-                onClick={handleNext}
-                disabled={!selectedMeal}
+                key={meal.type}
+                onClick={() => handleMealSelect(meal.type)}
                 className={cn(
-                  "w-full py-4 rounded-2xl font-medium transition-all",
-                  selectedMeal
-                    ? "bg-foreground text-background hover:opacity-90"
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
+                  "relative flex flex-col items-center gap-2 py-4 rounded-2xl border-2 transition-all",
+                  selectedMeal === meal.type
+                    ? "border-primary bg-primary/5 shadow-md"
+                    : "border-border bg-card hover:border-primary/30"
                 )}
               >
-                下一步
-              </button>
-            </>
-          ) : (
-            <>
-              <h3 className="text-lg font-semibold text-foreground mb-1">拍照或上传</h3>
-              <p className="text-sm text-muted-foreground mb-6">
-                拍摄食物照片，AI 将自动识别营养信息
-              </p>
-
-              {/* 拍照区域 */}
-              <div className="aspect-[4/3] bg-muted rounded-2xl flex items-center justify-center mb-6 overflow-hidden">
-                <div className="text-center space-y-3">
-                  <div className="w-16 h-16 mx-auto rounded-full bg-foreground/5 flex items-center justify-center">
-                    <Camera className="h-8 w-8 text-muted-foreground" />
+                <span className="text-2xl">{meal.icon}</span>
+                <span className={cn(
+                  "text-sm font-medium",
+                  selectedMeal === meal.type ? "text-primary" : "text-foreground"
+                )}>
+                  {meal.label}
+                </span>
+                {selectedMeal === meal.type && (
+                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                    <Check className="w-3 h-3 text-primary-foreground" />
                   </div>
-                  <p className="text-sm text-muted-foreground">点击下方按钮开始</p>
-                </div>
-              </div>
+                )}
+              </button>
+            ))}
+          </div>
 
-              {/* 操作按钮 */}
-              <div className="flex items-center justify-center gap-6">
-                <button
-                  onClick={() => handleCapture("album")}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border hover:bg-muted transition-colors"
-                >
-                  <Image className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-sm font-medium text-foreground">相册</span>
-                </button>
-                <button
-                  onClick={() => handleCapture("camera")}
-                  className="w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30 transition-transform hover:scale-105 active:scale-95"
-                >
-                  <div className="w-12 h-12 rounded-full border-4 border-primary-foreground" />
-                </button>
-                <div className="w-[88px]" />
-              </div>
-            </>
-          )}
+          {/* 操作按钮 - 选择餐次后直接展示 */}
+          <div
+            className={cn(
+              "flex items-center justify-center gap-4 transition-all duration-300",
+              selectedMeal
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-3 pointer-events-none"
+            )}
+          >
+            <button
+              onClick={() => handleCapture("camera")}
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-foreground text-background font-medium transition-all hover:opacity-90 active:scale-[0.98]"
+            >
+              <Camera className="w-5 h-5" />
+              <span>拍照识别</span>
+            </button>
+            <button
+              onClick={() => handleCapture("album")}
+              className="flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl border-2 border-border bg-card font-medium text-foreground transition-all hover:bg-muted active:scale-[0.98]"
+            >
+              <Image className="w-5 h-5" />
+              <span>从相册选择</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
