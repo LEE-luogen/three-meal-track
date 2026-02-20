@@ -1,4 +1,5 @@
-import { MealCard, type MealStatus } from "./MealCard";
+import { type MealStatus } from "./MealCard";
+import { SwipeableMealCard } from "./SwipeableMealCard";
 import { TimelineConnector } from "./TimelineConnector";
 import breakfastImg from "@/assets/breakfast.jpg";
 import lunchImg from "@/assets/lunch.jpg";
@@ -17,13 +18,19 @@ interface MealTimelineProps {
   breakfast: MealData;
   lunch: MealData;
   dinner: MealData;
+  onDeleteMeal?: (type: "breakfast" | "lunch" | "dinner") => void;
 }
 
-export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
+export function MealTimeline({ breakfast, lunch, dinner, onDeleteMeal }: MealTimelineProps) {
+  // 第一张已记录的卡片显示引导弹动
+  const firstRecorded =
+    breakfast.status === "recorded" ? "breakfast" :
+    lunch.status === "recorded" ? "lunch" :
+    dinner.status === "recorded" ? "dinner" : null;
+
   return (
     <div className="space-y-0">
-      {/* 早餐 */}
-      <MealCard
+      <SwipeableMealCard
         type="breakfast"
         status={breakfast.status}
         time={breakfast.time}
@@ -32,9 +39,10 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         imageUrl={breakfast.status === "recorded" ? breakfastImg : undefined}
         tags={breakfast.tags}
         isLoading={breakfast.isLoading}
+        showHint={firstRecorded === "breakfast"}
+        onDelete={() => onDeleteMeal?.("breakfast")}
       />
 
-      {/* 连接线 早餐->午餐 */}
       <TimelineConnector
         fromType="breakfast"
         toType="lunch"
@@ -42,8 +50,7 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         toStatus={lunch.status}
       />
 
-      {/* 午餐 */}
-      <MealCard
+      <SwipeableMealCard
         type="lunch"
         status={lunch.status}
         time={lunch.time}
@@ -52,9 +59,10 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         imageUrl={lunch.status === "recorded" ? lunchImg : undefined}
         tags={lunch.tags}
         isLoading={lunch.isLoading}
+        showHint={firstRecorded === "lunch"}
+        onDelete={() => onDeleteMeal?.("lunch")}
       />
 
-      {/* 连接线 午餐->晚餐 */}
       <TimelineConnector
         fromType="lunch"
         toType="dinner"
@@ -62,8 +70,7 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         toStatus={dinner.status}
       />
 
-      {/* 晚餐 */}
-      <MealCard
+      <SwipeableMealCard
         type="dinner"
         status={dinner.status}
         time={dinner.time}
@@ -72,6 +79,8 @@ export function MealTimeline({ breakfast, lunch, dinner }: MealTimelineProps) {
         imageUrl={dinner.status === "recorded" ? dinnerImg : undefined}
         tags={dinner.tags}
         isLoading={dinner.isLoading}
+        showHint={firstRecorded === "dinner"}
+        onDelete={() => onDeleteMeal?.("dinner")}
       />
     </div>
   );
