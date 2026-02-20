@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Scale } from 'lucide-react';
 
 interface FastingCompleteSheetProps {
   open: boolean;
@@ -7,7 +8,7 @@ interface FastingCompleteSheetProps {
   targetHours: number;
   planType: string;
   newBadge?: { id: string; name: string; icon: string } | null;
-  onStartEating: () => void;
+  onStartEating: (weight?: number) => void;
   onViewDetails: () => void;
 }
 
@@ -39,6 +40,7 @@ export function FastingCompleteSheet({
 }: FastingCompleteSheetProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [stars, setStars] = useState<{ id: number; delay: number; left: number }[]>([]);
+  const [weight, setWeight] = useState('');
 
   useEffect(() => {
     if (open) {
@@ -116,6 +118,30 @@ export function FastingCompleteSheet({
           </div>
         )}
 
+        {/* 记录体重 */}
+        <div className="bg-card rounded-2xl p-4 shadow-card mb-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Scale className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-foreground">记录今日体重</span>
+            <span className="text-xs text-muted-foreground">（选填）</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <input
+                type="number"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                placeholder="输入体重"
+                className="w-full py-3 px-4 bg-muted/50 rounded-xl text-foreground text-center text-lg font-semibold placeholder:text-muted-foreground/50 placeholder:text-sm placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                step="0.1"
+                min="20"
+                max="300"
+              />
+            </div>
+            <span className="text-sm text-muted-foreground font-medium">kg</span>
+          </div>
+        </div>
+
         {/* 鼓励文案 */}
         <div className="flex-1 flex items-center justify-center">
           <p className="text-center text-muted-foreground leading-relaxed px-4">
@@ -134,7 +160,7 @@ export function FastingCompleteSheet({
             查看详情
           </button>
           <button
-            onClick={onStartEating}
+            onClick={() => onStartEating(weight ? parseFloat(weight) : undefined)}
             className="w-full py-4 bg-foreground text-background rounded-2xl font-medium hover:opacity-90 transition-opacity"
           >
             开始进食
