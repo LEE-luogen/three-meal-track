@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { CircularProgress } from "./CircularProgress";
-import { Calendar, Pencil, Square } from "lucide-react";
+import { Calendar, Square, ChevronDown } from "lucide-react";
 import { useFastingStore } from "@/stores/fastingStore";
 import { toast } from "@/hooks/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface FastingCardProps {
   fastingHours: number;
@@ -23,27 +26,26 @@ export function FastingCard({
   endTime = "明天 11:30",
 }: FastingCardProps) {
   const { setShowFastingComplete, setShowEarlyEndConfirm } = useFastingStore();
+  const [expanded, setExpanded] = useState(false);
 
   const handleEndFasting = () => {
     const totalMinutes = fastingHours * 60 + fastingMinutes;
     const targetMinutes = targetHours * 60;
 
     if (totalMinutes >= targetMinutes) {
-      // 达成目标 → 显示全屏庆祝卡
       setShowFastingComplete(true);
     } else if (totalMinutes > 30) {
-      // 超过30分钟但未达标 → 显示确认抽屉
       setShowEarlyEndConfirm(true);
     } else {
-      // 少于30分钟 → Toast 提示
       toast({
         title: "断食时间过短",
         description: "断食需超过30分钟才会被记录",
       });
     }
   };
+
   return (
-    <div className="bg-card rounded-2xl shadow-card animate-slide-up overflow-hidden">
+    <div id="fasting-card" className="bg-card rounded-2xl shadow-card animate-slide-up overflow-hidden">
       {/* 顶部导航 */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-border/50">
         <h2 className="text-lg font-semibold text-foreground">Flux</h2>
@@ -68,52 +70,69 @@ export function FastingCard({
         />
       </div>
 
-      {/* 当前阶段信息 */}
-      <div className="mx-5 p-4 bg-muted/50 rounded-xl mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h3 className="font-semibold text-foreground">能量储存中</h3>
-            <p className="text-xs text-muted-foreground">Anabolic Phase</p>
+      {/* 可折叠的阶段详情 */}
+      <div className="mx-5 mb-4">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="w-full flex items-center justify-between p-3 rounded-xl bg-muted/50 hover:bg-muted/70 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-sm text-foreground">能量储存中</span>
+            <span className="text-xs text-muted-foreground">
+              {String(fastingHours).padStart(2, "0")}:{String(fastingMinutes).padStart(2, "0")} / {targetHours}:00
+            </span>
           </div>
-          <span className="text-sm text-muted-foreground">
-            {String(fastingHours).padStart(2, "0")}:{String(fastingMinutes).padStart(2, "0")}:
-            {String(fastingSeconds).padStart(2, "0")} / {targetHours}:00:00
-          </span>
-        </div>
+          <motion.div
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+          </motion.div>
+        </button>
 
-        <div className="flex items-center justify-between text-sm text-muted-foreground mt-3 pt-3 border-t border-border/50">
-          <span>下一阶段: 血糖平稳期</span>
-          <span>4.0 小时后</span>
-        </div>
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="overflow-hidden"
+            >
+              <div className="pt-3 space-y-3">
+                <div className="flex items-center justify-between text-sm text-muted-foreground px-1">
+                  <span>下一阶段: 血糖平稳期</span>
+                  <span>4.0 小时后</span>
+                </div>
 
-        {/* AI 提示 */}
-        <div className="mt-4 p-3 bg-warning/5 rounded-lg border border-warning/20">
-          <p className="text-sm text-foreground/80 leading-relaxed">
-            <span className="text-warning mr-1">○</span>
-            你刚刚享用完一顿美餐，身体正在消化食物并吸收营养。此时胰岛素水平升高，身体处于"合成模式"。
-          </p>
-        </div>
+                {/* AI 提示 */}
+                <div className="p-3 bg-warning/5 rounded-lg border border-warning/20">
+                  <p className="text-sm text-foreground/80 leading-relaxed">
+                    <span className="text-warning mr-1">○</span>
+                    你刚刚享用完一顿美餐，身体正在消化食物并吸收营养。此时胰岛素水平升高，身体处于"合成模式"。
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* 开始/结束时间 */}
-      <div className="mx-5 mb-4 grid grid-cols-2 gap-4">
-        <div>
-          <p className="text-xs text-muted-foreground mb-1.5">开始时间</p>
-          <div className="flex items-center justify-between bg-muted/30 rounded-xl px-4 py-3">
-            <span className="text-foreground font-medium">{startTime}</span>
-            <button className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors">
-              <Pencil className="w-4 h-4 text-primary" />
-            </button>
-          </div>
+      {/* 开始/结束时间 - 简化为单行 */}
+      <div className="mx-5 mb-4 flex items-center justify-between text-sm px-1">
+        <div className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+          <span className="text-muted-foreground">开始</span>
+          <span className="text-foreground font-medium">{startTime}</span>
         </div>
-        <div>
-          <p className="text-xs text-muted-foreground mb-1.5">结束时间</p>
-          <div className="flex items-center justify-between bg-muted/30 rounded-xl px-4 py-3">
-            <span className="text-foreground font-medium">{endTime}</span>
-            <button className="p-1.5 rounded-lg hover:bg-primary/10 transition-colors">
-              <Pencil className="w-4 h-4 text-primary" />
-            </button>
-          </div>
+        <div className={cn(
+          "h-[1px] flex-1 mx-3",
+          "bg-gradient-to-r from-primary/30 via-border to-muted-foreground/20"
+        )} />
+        <div className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+          <span className="text-muted-foreground">结束</span>
+          <span className="text-foreground font-medium">{endTime}</span>
         </div>
       </div>
 
