@@ -1,0 +1,111 @@
+import { Sparkles, Lock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+
+interface AIIntelligenceCardProps {
+  confidence?: number;
+  suggestion?: string;
+  basis?: string;
+  isPro?: boolean;
+  className?: string;
+}
+
+function useTypewriter(text: string, start: boolean, speed = 25, delay = 300) {
+  const [displayed, setDisplayed] = useState("");
+  useEffect(() => {
+    if (!start) return;
+    setDisplayed("");
+    const timer = setTimeout(() => {
+      let i = 0;
+      const interval = setInterval(() => {
+        i++;
+        setDisplayed(text.slice(0, i));
+        if (i >= text.length) clearInterval(interval);
+      }, speed);
+      return () => clearInterval(interval);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [text, start, speed, delay]);
+  return displayed;
+}
+
+export function AIIntelligenceCard({
+  confidence = 85,
+  suggestion = "建议适当增加蛋白质摄入，当前蛋白质占比偏低。晚餐可选择鸡胸肉或鱼类，有助于肌肉修复与代谢提升。",
+  basis = "基于今日2餐数据、近7日饮食习惯及断食模式分析",
+  isPro = false,
+  className,
+}: AIIntelligenceCardProps) {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  const displayedText = useTypewriter(suggestion, visible, 20, 400);
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "relative rounded-2xl overflow-hidden shadow-card transition-all duration-700",
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
+        className
+      )}
+    >
+      {/* Gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] via-[hsl(var(--ai-gradient-end))] to-primary opacity-90" />
+      <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+
+      <div className="relative z-10 p-5 text-white">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <span className="font-semibold text-sm">AI 智能洞察</span>
+          </div>
+          <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm">
+            {confidence}% 置信度
+          </span>
+        </div>
+
+        {/* Suggestion with typewriter */}
+        <p className="text-sm leading-relaxed opacity-95 min-h-[3em]">
+          {displayedText}
+          {visible && displayedText.length < suggestion.length && (
+            <span className="inline-block w-0.5 h-3.5 bg-white/70 ml-0.5 animate-pulse" />
+          )}
+        </p>
+
+        {/* Basis */}
+        <p className="text-[11px] opacity-60 mt-2">{basis}</p>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 mt-3">
+          <button className="px-3 py-1.5 bg-white/20 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/30 transition-colors">
+            查看详情
+          </button>
+          {!isPro && (
+            <button className="px-3 py-1.5 bg-white/10 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/20 transition-colors flex items-center gap-1">
+              <Lock className="w-3 h-3" />
+              升级 Pro
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

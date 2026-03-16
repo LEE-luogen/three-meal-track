@@ -1,99 +1,94 @@
 import { useState } from "react";
 import { HomeHeader } from "@/components/home/HomeHeader";
-import { DailyStatusBar } from "@/components/home/DailyStatusBar";
-import { FastingCard } from "@/components/fasting/FastingCard";
-import { MealTimeline } from "@/components/fasting/MealTimeline";
-import { AIInsightsSection } from "@/components/home/AIInsightsSection";
-import { WeightCurveCard } from "@/components/fasting/WeightCurveCard";
+import { CircularProgress } from "@/components/fasting/CircularProgress";
+import { PhaseIndicator } from "@/components/home/PhaseIndicator";
+import { TimeInfoCards } from "@/components/home/TimeInfoCards";
+import { TodayMealsOverview } from "@/components/home/TodayMealsOverview";
+import { AIIntelligenceCard } from "@/components/home/AIIntelligenceCard";
+import { DataCardsGrid } from "@/components/home/DataCardsGrid";
+import { QuickActionBar } from "@/components/home/QuickActionBar";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { HomeDialogs } from "@/components/home/HomeDialogs";
-import breakfastImg from "@/assets/breakfast.jpg";
-import lunchImg from "@/assets/lunch.jpg";
-import dinnerImg from "@/assets/dinner.jpg";
+import { useFastingStore } from "@/stores/fastingStore";
+import { Square, Play } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 type MealType = "breakfast" | "lunch" | "dinner";
 
 const Index = () => {
   const [loadingMeal, setLoadingMeal] = useState<MealType | null>(null);
+  const { setShowFastingComplete, setShowEarlyEndConfirm } = useFastingStore();
 
-  const fastingData = {
-    fastingHours: 16,
-    fastingMinutes: 2,
-    fastingSeconds: 45,
-    targetHours: 16,
-    isInFastingWindow: true,
-    startTime: "今天 19:30",
-    endTime: "明天 11:30",
-  };
+  const fastingHours = 16;
+  const fastingMinutes = 2;
+  const fastingSeconds = 45;
+  const targetHours = 16;
+  const isInFastingWindow = true;
 
-  const mealsData = {
-    breakfast: {
-      status: "recorded" as const,
-      time: "07:21",
-      foodName: "牛油果鸡蛋吐司",
-      calories: 275,
-      tags: ["低卡饱腹", "高膳食纤维", "轻食餐品"],
-      isLoading: loadingMeal === "breakfast",
-    },
-    lunch: {
-      status: "recorded" as const,
-      time: "12:35",
-      foodName: "鸡胸肉藜麦沙拉",
-      calories: 510,
-      tags: ["高蛋白", "低GI", "复食适用"],
-      isLoading: loadingMeal === "lunch",
-    },
-    dinner: {
-      status: (loadingMeal === "dinner" ? "recorded" : "pending") as "recorded" | "pending",
-      isLoading: loadingMeal === "dinner",
-    },
+  const handleEndFasting = () => {
+    const totalMinutes = fastingHours * 60 + fastingMinutes;
+    const targetMinutes = targetHours * 60;
+    if (totalMinutes >= targetMinutes) {
+      setShowFastingComplete(true);
+    } else if (totalMinutes > 30) {
+      setShowEarlyEndConfirm(true);
+    } else {
+      toast({ title: "断食时间过短", description: "断食需超过30分钟才会被记录" });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 page-enter">
       <div className="h-12" />
 
-      <div className="px-4 max-w-md mx-auto space-y-5">
+      <div className="px-4 max-w-md mx-auto space-y-6">
         {/* ① 顶部问候栏 */}
         <HomeHeader />
 
-        {/* ② 今日状态概览条 */}
-        <DailyStatusBar
-          fastingTime={`${fastingData.fastingHours}:${String(fastingData.fastingMinutes).padStart(2, "0")}`}
-          totalCalories={785}
-          weight={71.0}
-          mealsRecorded={2}
-          totalMeals={3}
-        />
-
-        {/* ③ 断食核心卡片 */}
-        <FastingCard {...fastingData} />
-
-        {/* ④ 三餐时间轴 */}
-        <div id="meal-timeline">
-          <h2 className="text-lg font-semibold text-foreground mb-3 flex items-center gap-2">
-            <span>三餐记录</span>
-            <span className="text-xs font-normal text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-              时间轴
-            </span>
-          </h2>
-          <MealTimeline {...mealsData} />
+        {/* ② 呼吸光晕计时器 */}
+        <div className="flex justify-center animate-card-appear">
+          <div className="animate-breathing" style={{ animationDuration: "3s" }}>
+            <CircularProgress
+              currentHours={fastingHours}
+              currentMinutes={fastingMinutes}
+              currentSeconds={fastingSeconds}
+              targetHours={targetHours}
+              isInFastingWindow={isInFastingWindow}
+            />
+          </div>
         </div>
 
-        {/* ⑤ AI 洞察区（合并 AI分析 + 能量条） */}
-        <AIInsightsSection
-          totalCalories={785}
-          mealsRecorded={2}
-          fat={{ value: 24, max: 65 }}
-          carbs={{ value: 180, max: 300 }}
-          protein={{ value: 52, max: 80 }}
-          micros={{ value: 68, max: 100 }}
-        />
+        {/* ③ 生理阶段指示器 */}
+        <PhaseIndicator currentHours={fastingHours} />
 
-        {/* ⑥ 体重趋势卡片 */}
-        <div id="weight-card" className="animate-slide-up" style={{ animationDelay: "200ms" }}>
-          <WeightCurveCard />
-        </div>
+        {/* ④ 时间信息卡片 */}
+        <TimeInfoCards startTime="今天 19:30" endTime="明天 11:30" />
+
+        {/* ⑤ 主操作按钮 */}
+        <button
+          onClick={handleEndFasting}
+          className={cn(
+            "w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2",
+            "bg-foreground text-background shadow-lg",
+            "hover:opacity-90 transition-opacity press-scale"
+          )}
+        >
+          <Square className="w-4 h-4" />
+          结束断食
+        </button>
+
+        {/* ⑥ 今日餐食概览 */}
+        <TodayMealsOverview />
+
+        {/* ⑦ AI 智能洞察卡片 */}
+        <AIIntelligenceCard />
+
+        {/* ⑧ 数据卡片网格 */}
+        <DataCardsGrid />
+
+        {/* ⑨ 快速操作栏 */}
+        <QuickActionBar />
       </div>
 
       <BottomNavigation />
