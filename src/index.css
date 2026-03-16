@@ -2,12 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* Flux 灵动断食 — 完整设计系统 Token
+   所有颜色使用 HSL。
+   基于 UI交互设计文档 v2.0 构建。
 */
 
 @layer base {
   :root {
+    /* ── 基础色 ── */
     --background: 150 20% 97%;
     --foreground: 220 20% 15%;
 
@@ -38,34 +40,85 @@ All colors MUST be HSL.
 
     --radius: 1rem;
 
-    /* 餐次专属色彩 */
+    /* ── 餐次专属色 ── */
     --breakfast: 30 90% 55%;
     --breakfast-light: 30 85% 95%;
     --breakfast-foreground: 30 90% 25%;
-    
+
     --lunch: 145 60% 42%;
     --lunch-light: 145 50% 94%;
     --lunch-foreground: 145 60% 20%;
-    
+
     --dinner: 255 60% 55%;
     --dinner-light: 255 50% 96%;
     --dinner-foreground: 255 55% 30%;
 
-    /* AI 分析卡片 */
+    /* ── AI 功能色 ── */
     --ai-gradient-start: 255 70% 60%;
     --ai-gradient-end: 200 80% 55%;
 
-    /* 状态色 */
+    /* ── Pro / Premium 专属色 ── */
+    --pro-gold: 45 90% 55%;
+    --pro-gradient-start: 152 55% 45%;
+    --pro-gradient-end: 200 80% 55%;
+
+    /* ── 状态色 ── */
     --success: 152 55% 45%;
     --warning: 30 90% 55%;
     --pending: 220 15% 70%;
 
-    /* 圆环进度渐变色 */
+    /* ── 生理阶段色 (断食进度) ── */
+    --phase-1: 210 70% 60%;    /* 能量储存期 0-4h */
+    --phase-2: 220 65% 55%;    /* 血糖平稳期 4-12h */
+    --phase-3: 270 60% 50%;    /* 脂肪燃烧期 12-18h */
+    --phase-4: 290 55% 45%;    /* 细胞净化期 18-24h */
+    --phase-5: 40 80% 50%;     /* 深度修复期 24h+ */
+
+    /* ── 断食 / 进食 动态状态色 ── */
+    --fasting-start: 220 50% 15%;
+    --fasting-end: 270 60% 30%;
+    --eating-start: 30 85% 55%;
+    --eating-end: 45 90% 60%;
+
+    /* ── 圆环进度渐变色 ── */
     --ring-start: 30 90% 60%;
     --ring-mid: 35 85% 55%;
     --ring-end: 152 55% 50%;
 
-    /* Onboarding 专用色彩 */
+    /* ── 阴影系统 ── */
+    --shadow-xs: 0 1px 2px 0 hsl(var(--foreground) / 0.05);
+    --shadow-sm: 0 1px 3px 0 hsl(var(--foreground) / 0.1), 0 1px 2px -1px hsl(var(--foreground) / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(var(--foreground) / 0.1), 0 2px 4px -2px hsl(var(--foreground) / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--foreground) / 0.1), 0 4px 6px -4px hsl(var(--foreground) / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--foreground) / 0.1), 0 8px 10px -6px hsl(var(--foreground) / 0.1);
+    --shadow-card: 0 2px 12px -2px hsl(var(--foreground) / 0.06);
+    --shadow-card-hover: 0 8px 24px -4px hsl(var(--foreground) / 0.1);
+    --shadow-glow-primary: 0 0px 20px -4px hsl(var(--primary) / 0.3);
+    --shadow-glow-accent: 0 0px 20px -4px hsl(var(--accent) / 0.3);
+
+    /* ── 间距系统 (8px 基准) ── */
+    --spacing-page: 24px;
+    --spacing-section: 32px;
+    --spacing-card: 20px;
+    --spacing-element: 16px;
+    --spacing-dense: 12px;
+    --spacing-tight: 8px;
+    --spacing-micro: 4px;
+
+    /* ── 动效曲线 ── */
+    --ease-linear: cubic-bezier(0, 0, 1, 1);
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-organic: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ── 动效时长 ── */
+    --duration-fast: 150ms;
+    --duration-normal: 300ms;
+    --duration-slow: 500ms;
+    --duration-slower: 700ms;
+
+    /* ── Onboarding 专用色 ── */
     --onboarding-background: 30 100% 97%;
     --onboarding-card: 0 0% 100%;
     --onboarding-primary: 30 90% 55%;
@@ -75,6 +128,7 @@ All colors MUST be HSL.
     --onboarding-text: 220 43% 11%;
     --onboarding-secondary: 220 9% 46%;
 
+    /* ── Sidebar ── */
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 152 55% 45%;
@@ -114,27 +168,47 @@ All colors MUST be HSL.
     --input: 220 20% 20%;
     --ring: 152 55% 50%;
 
-    /* 餐次专属色彩 - 暗色模式 */
+    /* 餐次 - 暗色 */
     --breakfast: 30 80% 60%;
     --breakfast-light: 30 40% 18%;
     --breakfast-foreground: 30 85% 85%;
-    
+
     --lunch: 145 50% 50%;
     --lunch-light: 145 30% 16%;
     --lunch-foreground: 145 50% 85%;
-    
+
     --dinner: 255 55% 65%;
     --dinner-light: 255 35% 18%;
     --dinner-foreground: 255 50% 88%;
 
+    /* AI */
     --ai-gradient-start: 255 60% 55%;
     --ai-gradient-end: 200 70% 50%;
 
+    /* Pro */
+    --pro-gold: 45 80% 55%;
+    --pro-gradient-start: 152 50% 50%;
+    --pro-gradient-end: 200 70% 50%;
+
+    /* 状态 */
     --success: 152 50% 50%;
     --warning: 40 85% 55%;
     --pending: 220 15% 50%;
 
-    /* Onboarding 专用色彩 - 暗色模式 */
+    /* 生理阶段 - 暗色 */
+    --phase-1: 210 50% 50%;
+    --phase-2: 220 45% 45%;
+    --phase-3: 270 40% 40%;
+    --phase-4: 290 35% 35%;
+    --phase-5: 40 60% 40%;
+
+    /* 断食/进食 - 暗色 */
+    --fasting-start: 210 40% 20%;
+    --fasting-end: 260 50% 40%;
+    --eating-start: 25 75% 50%;
+    --eating-end: 40 80% 55%;
+
+    /* Onboarding - 暗色 */
     --onboarding-background: 220 25% 10%;
     --onboarding-card: 220 25% 14%;
     --onboarding-primary: 30 80% 60%;
@@ -144,6 +218,7 @@ All colors MUST be HSL.
     --onboarding-text: 150 15% 95%;
     --onboarding-secondary: 220 10% 60%;
 
+    /* Sidebar - 暗色 */
     --sidebar-background: 220 25% 10%;
     --sidebar-foreground: 150 15% 95%;
     --sidebar-primary: 152 55% 50%;
@@ -166,6 +241,7 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
+  /* ── 滚动条 ── */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -173,13 +249,52 @@ All colors MUST be HSL.
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
+  /* ── 安全区 ── */
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+
+  /* ── 卡片悬停交互 ── */
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* ── 悬停缩放 ── */
+  .hover-scale {
+    @apply transition-transform duration-200;
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  /* ── 按钮按压反馈 ── */
+  .press-scale {
+    @apply transition-transform duration-150;
+  }
+  .press-scale:active {
+    transform: scale(0.98);
+  }
+
+  /* ── 磨砂玻璃 ── */
+  .glass {
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    background: hsl(var(--card) / 0.75);
+  }
+
+  .glass-sm {
+    backdrop-filter: blur(8px) saturate(160%);
+    -webkit-backdrop-filter: blur(8px) saturate(160%);
+    background: hsl(var(--card) / 0.6);
+  }
 }
 
-/* 星星落下动画 */
+/* ── 星星落下动画 ── */
 @keyframes star-fall {
   0% {
     opacity: 0;
@@ -193,7 +308,90 @@ All colors MUST be HSL.
     transform: translateY(80px) rotate(360deg);
   }
 }
-
 .animate-star-fall {
   animation: star-fall 1.5s ease-out forwards;
+}
+
+/* ── 呼吸光晕 ── */
+@keyframes breathing {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+.animate-breathing {
+  animation: breathing 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ── 页面转场 ── */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.page-enter {
+  animation: page-enter 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes page-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+.page-exit {
+  animation: page-exit 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ── 卡片出现 ── */
+@keyframes card-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-card-appear {
+  animation: card-appear 0.3s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* ── 庆祝动画 ── */
+@keyframes celebrate {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-celebrate {
+  animation: celebrate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── 渐变分隔线 ── */
+.divider-gradient {
+  height: 0.5px;
+  background: linear-gradient(to right, transparent, hsl(var(--border)), transparent);
 }
