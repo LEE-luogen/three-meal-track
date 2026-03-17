@@ -4,28 +4,55 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useOnboardingStore } from "@/stores/onboardingStore";
+import { useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import ProfilePage from "./pages/ProfilePage";
 import OnboardingPage from "./pages/OnboardingPage";
 import DiscoverPage from "./pages/DiscoverPage";
 import RecordsPage from "./pages/RecordsPage";
+import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, loading } = useAuth();
   const { currentStep } = useOnboardingStore();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
+
   if (currentStep !== 'completed') {
     return <Navigate to="/onboarding" replace />;
   }
+
   return <>{children}</>;
 };
 
+const AuthRoute = () => {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return null;
+  if (isAuthenticated) return <Navigate to="/" replace />;
+  return <AuthPage />;
+};
+
 const OnboardingRoute = () => {
+  const { isAuthenticated, loading } = useAuth();
   const { currentStep } = useOnboardingStore();
-  if (currentStep === 'completed') {
-    return <Navigate to="/" replace />;
-  }
+
+  if (loading) return null;
+  if (!isAuthenticated) return <Navigate to="/auth" replace />;
+  if (currentStep === 'completed') return <Navigate to="/" replace />;
   return <OnboardingPage />;
 };
 
@@ -36,6 +63,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          <Route path="/auth" element={<AuthRoute />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/onboarding" element={<OnboardingRoute />} />
           <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
