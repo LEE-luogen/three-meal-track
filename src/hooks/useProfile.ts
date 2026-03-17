@@ -18,7 +18,7 @@ export interface Profile {
   pro_expire_at: string | null;
   remaining_free_analyses: number;
   nickname_changed_count: number;
-  onboarding_data: Record<string, unknown>;
+  onboarding_data: Record<string, unknown> | null;
 }
 
 export function useProfile() {
