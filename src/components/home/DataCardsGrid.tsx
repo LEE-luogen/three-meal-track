@@ -60,6 +60,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       colorVar: "accent",
       isLocked: !isPro,
       isProFeature: true,
+    },
   ];
 
   return (
