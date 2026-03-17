@@ -14,7 +14,6 @@ interface QuickActionBarProps {
 export function QuickActionBar({ className }: QuickActionBarProps) {
   const actions: QuickAction[] = [
     { icon: ClipboardList, label: "补录" },
-    { icon: Bell, label: "提醒" },
     { icon: History, label: "历史" },
     { icon: Settings, label: "设置" },
   ];
