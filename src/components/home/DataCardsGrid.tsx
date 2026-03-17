@@ -1,4 +1,4 @@
-import { Apple, Activity, Trophy, Users, Lock } from "lucide-react";
+import { Apple, Activity, Trophy, Users, Lock, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMeals } from "@/hooks/useMeals";
 import { useAchievements } from "@/hooks/useAchievements";
