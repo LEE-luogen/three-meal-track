@@ -19,7 +19,7 @@ export function QuickActionBar({ className }: QuickActionBarProps) {
   ];
 
   return (
-    <div className={cn("grid grid-cols-4 gap-2", className)}>
+    <div className={cn("grid grid-cols-3 gap-2", className)}>
       {actions.map((action) => {
         const Icon = action.icon;
         return (
