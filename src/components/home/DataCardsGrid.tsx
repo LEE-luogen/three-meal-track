@@ -32,6 +32,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       subtext: totalMacros > 0 ? `${Math.round(todayCalories)} kcal 已摄入` : "暂无数据",
       colorVar: "primary",
       isLocked: false,
+      isProFeature: false,
     },
     {
       icon: Activity,
