@@ -59,7 +59,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       subtext: "本周排行",
       colorVar: "accent",
       isLocked: !isPro,
-    },
+      isProFeature: true,
   ];
 
   return (
