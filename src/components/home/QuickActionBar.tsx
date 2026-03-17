@@ -1,4 +1,4 @@
-import { ClipboardList, Bell, History, Settings } from "lucide-react";
+import { ClipboardList, History, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface QuickAction {
