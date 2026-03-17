@@ -1,4 +1,4 @@
-import { Sparkles, Lock, RefreshCw } from "lucide-react";
+import { Sparkles, Lock, RefreshCw, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
