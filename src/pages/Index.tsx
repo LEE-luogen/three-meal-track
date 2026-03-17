@@ -10,6 +10,9 @@ import { QuickActionBar } from "@/components/home/QuickActionBar";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { DebugPanel } from "@/components/debug/DebugPanel";
 import { HomeDialogs } from "@/components/home/HomeDialogs";
+import { useFasting } from "@/hooks/useFasting";
+import { useProfile } from "@/hooks/useProfile";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useFastingStore } from "@/stores/fastingStore";
 import { Square, Play } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -20,14 +23,40 @@ type MealType = "breakfast" | "lunch" | "dinner";
 const Index = () => {
   const [loadingMeal, setLoadingMeal] = useState<MealType | null>(null);
   const { setShowFastingComplete, setShowEarlyEndConfirm } = useFastingStore();
+  const { profile } = useProfile();
+  const { unreadCount } = useNotifications();
+  const {
+    isFasting,
+    elapsed,
+    targetHours,
+    planType,
+    startFasting,
+    endFasting: endFastingDB,
+    activeFasting,
+  } = useFasting();
 
-  const fastingHours = 16;
-  const fastingMinutes = 2;
-  const fastingSeconds = 45;
-  const targetHours = 16;
-  const isInFastingWindow = true;
+  const fastingHours = elapsed.hours;
+  const fastingMinutes = elapsed.minutes;
+  const fastingSeconds = elapsed.seconds;
 
-  const handleEndFasting = () => {
+  const startTime = activeFasting
+    ? new Date(activeFasting.started_at).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })
+    : "--:--";
+  const endTimeDate = activeFasting
+    ? new Date(new Date(activeFasting.started_at).getTime() + targetHours * 3600000)
+    : null;
+  const endTime = endTimeDate
+    ? endTimeDate.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })
+    : "--:--";
+
+  const startLabel = activeFasting
+    ? `今天 ${startTime}`
+    : "--";
+  const endLabel = endTimeDate
+    ? `${endTimeDate.toDateString() === new Date().toDateString() ? "今天" : "明天"} ${endTime}`
+    : "--";
+
+  const handleEndFasting = async () => {
     const totalMinutes = fastingHours * 60 + fastingMinutes;
     const targetMinutes = targetHours * 60;
     if (totalMinutes >= targetMinutes) {
@@ -39,56 +68,69 @@ const Index = () => {
     }
   };
 
+  const handleStartFasting = async () => {
+    const { error } = await startFasting(planType, targetHours);
+    if (!error) {
+      toast({ title: "断食已开始", description: `${planType} 计划` });
+    }
+  };
+
+  const displayName = profile?.nickname || "用户";
+  const today = new Date();
+  const dateLabel = today.toLocaleDateString("zh-CN", { weekday: "short", month: "numeric", day: "numeric" });
+
   return (
     <div className="min-h-screen bg-background pb-24 page-enter">
       <div className="h-12" />
 
       <div className="px-4 max-w-md mx-auto space-y-6">
-        {/* ① 顶部问候栏 */}
-        <HomeHeader />
+        <HomeHeader userName={displayName.charAt(0)} dateLabel={dateLabel} unreadCount={unreadCount} />
 
-        {/* ② 呼吸光晕计时器 */}
         <div className="flex justify-center animate-card-appear">
-          <div className="animate-breathing" style={{ animationDuration: "3s" }}>
+          <div className={cn(isFasting && "animate-breathing")} style={{ animationDuration: "3s" }}>
             <CircularProgress
               currentHours={fastingHours}
               currentMinutes={fastingMinutes}
               currentSeconds={fastingSeconds}
               targetHours={targetHours}
-              isInFastingWindow={isInFastingWindow}
+              isInFastingWindow={isFasting}
             />
           </div>
         </div>
 
-        {/* ③ 生理阶段指示器 */}
         <PhaseIndicator currentHours={fastingHours} />
 
-        {/* ④ 时间信息卡片 */}
-        <TimeInfoCards startTime="今天 19:30" endTime="明天 11:30" />
+        <TimeInfoCards startTime={startLabel} endTime={endLabel} />
 
-        {/* ⑤ 主操作按钮 */}
-        <button
-          onClick={handleEndFasting}
-          className={cn(
-            "w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2",
-            "bg-foreground text-background shadow-lg",
-            "hover:opacity-90 transition-opacity press-scale"
-          )}
-        >
-          <Square className="w-4 h-4" />
-          结束断食
-        </button>
+        {isFasting ? (
+          <button
+            onClick={handleEndFasting}
+            className={cn(
+              "w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2",
+              "bg-foreground text-background shadow-lg",
+              "hover:opacity-90 transition-opacity press-scale"
+            )}
+          >
+            <Square className="w-4 h-4" />
+            结束断食
+          </button>
+        ) : (
+          <button
+            onClick={handleStartFasting}
+            className={cn(
+              "w-full py-4 rounded-2xl font-medium flex items-center justify-center gap-2",
+              "bg-primary text-primary-foreground shadow-lg",
+              "hover:opacity-90 transition-opacity press-scale"
+            )}
+          >
+            <Play className="w-4 h-4" />
+            开始断食
+          </button>
+        )}
 
-        {/* ⑥ 今日餐食概览 */}
         <TodayMealsOverview />
-
-        {/* ⑦ AI 智能洞察卡片 */}
         <AIIntelligenceCard />
-
-        {/* ⑧ 数据卡片网格 */}
         <DataCardsGrid />
-
-        {/* ⑨ 快速操作栏 */}
         <QuickActionBar />
       </div>
 
