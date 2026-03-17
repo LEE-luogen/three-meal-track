@@ -124,7 +124,12 @@ export function AIIntelligenceCard({ className }: AIIntelligenceCardProps) {
             className="px-3 py-1.5 bg-white/20 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/30 transition-colors">
             {fetching ? "分析中..." : "刷新洞察"}
           </button>
-          {!isPro && (
+          {isPro ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[10px] font-bold bg-white/15 backdrop-blur-sm">
+              <Crown className="w-3 h-3" />
+              Pro 无限洞察
+            </span>
+          ) : (
             <button className="px-3 py-1.5 bg-white/10 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/20 transition-colors flex items-center gap-1">
               <Lock className="w-3 h-3" />
               升级 Pro
