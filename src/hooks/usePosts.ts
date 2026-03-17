@@ -90,11 +90,8 @@ export function usePosts(topicFilter?: string) {
     if (!user) return;
     if (currentlyLiked) {
       await supabase.from('post_likes').delete().eq('user_id', user.id).eq('post_id', postId);
-      // Decrement count
-      await supabase.rpc('decrement_post_likes' as any, { post_id_input: postId }).catch(() => {});
     } else {
       await supabase.from('post_likes').insert({ user_id: user.id, post_id: postId });
-      await supabase.rpc('increment_post_likes' as any, { post_id_input: postId }).catch(() => {});
     }
     await fetchPosts();
   }, [user, fetchPosts]);
