@@ -80,7 +80,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
                   <span className="text-[10px] text-muted-foreground">Pro 功能</span>
                 </div>
               </div>
-            ) : card.wasLocked && (
+            ) : card.isProFeature && isPro && (
               <div className="absolute top-2 right-2 z-10">
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold bg-gradient-to-r from-[hsl(var(--pro-gold))] to-[hsl(25,80%,50%)] text-white">
                   <Crown className="w-2 h-2" />
