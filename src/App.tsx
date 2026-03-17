@@ -37,8 +37,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/auth" element={<AuthRoute />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/auth" element={<Navigate to="/" replace />} />
           <Route path="/onboarding" element={<OnboardingRoute />} />
           <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
           <Route path="/discover" element={<ProtectedRoute><DiscoverPage /></ProtectedRoute>} />
