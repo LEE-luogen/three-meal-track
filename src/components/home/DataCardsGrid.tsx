@@ -41,6 +41,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       subtext: "需要更多数据",
       colorVar: "warning",
       isLocked: false,
+      isProFeature: false,
     },
     {
       icon: Trophy,
