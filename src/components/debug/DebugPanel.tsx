@@ -166,7 +166,7 @@ export function DebugPanel() {
 
         {/* Status bar */}
         <div className="px-5 py-2.5 bg-muted/50 flex items-center gap-3 text-[11px] text-muted-foreground border-b border-border">
-          <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", isPro ? "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" : "bg-muted text-muted-foreground")}>
+          <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-medium", isPro ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground")}>
             {isPro ? "Pro 会员" : "免费用户"}
           </span>
           <span>{fastingStore.isFasting ? "🟢 断食中" : "⚪ 未断食"}</span>

@@ -94,6 +94,7 @@ const Index = () => {
 
       <BottomNavigation />
       <HomeDialogs onMealLoading={setLoadingMeal} />
+      <DebugPanel />
     </div>
   );
 };
