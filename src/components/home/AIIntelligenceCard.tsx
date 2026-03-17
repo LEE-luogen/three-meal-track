@@ -1,12 +1,11 @@
-import { Sparkles, Lock } from "lucide-react";
+import { Sparkles, Lock, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 
 interface AIIntelligenceCardProps {
-  confidence?: number;
-  suggestion?: string;
-  basis?: string;
-  isPro?: boolean;
   className?: string;
 }
 
@@ -29,15 +28,36 @@ function useTypewriter(text: string, start: boolean, speed = 25, delay = 300) {
   return displayed;
 }
 
-export function AIIntelligenceCard({
-  confidence = 85,
-  suggestion = "建议适当增加蛋白质摄入，当前蛋白质占比偏低。晚餐可选择鸡胸肉或鱼类，有助于肌肉修复与代谢提升。",
-  basis = "基于今日2餐数据、近7日饮食习惯及断食模式分析",
-  isPro = false,
-  className,
-}: AIIntelligenceCardProps) {
+export function AIIntelligenceCard({ className }: AIIntelligenceCardProps) {
   const [visible, setVisible] = useState(false);
+  const [suggestion, setSuggestion] = useState("分析你的饮食与断食数据，生成个性化健康建议...");
+  const [confidence, setConfidence] = useState(0);
+  const [basis, setBasis] = useState("正在加载");
+  const [fetching, setFetching] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { isAuthenticated } = useAuth();
+  const { profile } = useProfile();
+  const isPro = profile?.is_pro ?? false;
+
+  const fetchInsight = useCallback(async () => {
+    if (!isAuthenticated) return;
+    setFetching(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const resp = await supabase.functions.invoke('ai-insights', {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (resp.data) {
+        setSuggestion(resp.data.suggestion);
+        setConfidence(resp.data.confidence);
+        setBasis(resp.data.basis);
+      }
+    } catch (e) {
+      console.error('Failed to fetch AI insights:', e);
+    } finally {
+      setFetching(false);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -45,15 +65,16 @@ export function AIIntelligenceCard({
         if (entry.isIntersecting) {
           setVisible(true);
           observer.disconnect();
+          fetchInsight();
         }
       },
       { threshold: 0.3 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
-  }, []);
+  }, [fetchInsight]);
 
-  const displayedText = useTypewriter(suggestion, visible, 20, 400);
+  const displayedText = useTypewriter(suggestion, visible && !fetching, 20, 400);
 
   return (
     <div
@@ -64,12 +85,10 @@ export function AIIntelligenceCard({
         className
       )}
     >
-      {/* Gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(var(--ai-gradient-start))] via-[hsl(var(--ai-gradient-end))] to-primary opacity-90" />
       <div className="absolute top-0 right-0 w-28 h-28 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
       <div className="relative z-10 p-5 text-white">
-        {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="p-1.5 bg-white/20 rounded-lg backdrop-blur-sm">
@@ -82,21 +101,28 @@ export function AIIntelligenceCard({
           </span>
         </div>
 
-        {/* Suggestion with typewriter */}
         <p className="text-sm leading-relaxed opacity-95 min-h-[3em]">
-          {displayedText}
-          {visible && displayedText.length < suggestion.length && (
-            <span className="inline-block w-0.5 h-3.5 bg-white/70 ml-0.5 animate-pulse" />
+          {fetching ? (
+            <span className="flex items-center gap-2">
+              <RefreshCw className="w-3 h-3 animate-spin" />
+              正在分析...
+            </span>
+          ) : (
+            <>
+              {displayedText}
+              {visible && displayedText.length < suggestion.length && (
+                <span className="inline-block w-0.5 h-3.5 bg-white/70 ml-0.5 animate-pulse" />
+              )}
+            </>
           )}
         </p>
 
-        {/* Basis */}
         <p className="text-[11px] opacity-60 mt-2">{basis}</p>
 
-        {/* Actions */}
         <div className="flex items-center gap-2 mt-3">
-          <button className="px-3 py-1.5 bg-white/20 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/30 transition-colors">
-            查看详情
+          <button onClick={fetchInsight} disabled={fetching}
+            className="px-3 py-1.5 bg-white/20 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/30 transition-colors">
+            {fetching ? "分析中..." : "刷新洞察"}
           </button>
           {!isPro && (
             <button className="px-3 py-1.5 bg-white/10 rounded-xl text-xs font-medium backdrop-blur-sm hover:bg-white/20 transition-colors flex items-center gap-1">
