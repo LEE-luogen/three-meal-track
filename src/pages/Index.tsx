@@ -8,6 +8,7 @@ import { AIIntelligenceCard } from "@/components/home/AIIntelligenceCard";
 import { DataCardsGrid } from "@/components/home/DataCardsGrid";
 import { QuickActionBar } from "@/components/home/QuickActionBar";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
+import { DebugPanel } from "@/components/debug/DebugPanel";
 import { HomeDialogs } from "@/components/home/HomeDialogs";
 import { useFastingStore } from "@/stores/fastingStore";
 import { Square, Play } from "lucide-react";
