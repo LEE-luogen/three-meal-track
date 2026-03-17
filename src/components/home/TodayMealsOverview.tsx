@@ -38,11 +38,7 @@ export function TodayMealsOverview({ className }: TodayMealsOverviewProps) {
   const mealsRecorded = mealTypes.filter(t => getMealByType(t)).length;
 
   const handleAddMeal = () => {
-    if (subscriptionType === "free") {
-      setShowPaywall(true);
-    } else {
-      setShowCamera(true);
-    }
+    setShowCamera(true);
   };
 
   return (
