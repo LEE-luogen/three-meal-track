@@ -51,19 +51,39 @@ const ProfilePage = () => {
         </div>
 
         {/* User card */}
-        <div className="bg-card p-5 rounded-3xl shadow-card">
+        <div className={`p-5 rounded-3xl shadow-card ${
+          isPro
+            ? "bg-gradient-to-br from-[hsl(var(--pro-gold)/0.08)] to-[hsl(25,80%,50%,0.05)] border border-[hsl(var(--pro-gold)/0.2)] bg-card"
+            : "bg-card"
+        }`}>
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full ring-4 ring-primary/10 bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground text-xl font-semibold">
-              {avatarInitial}
+            <div className="relative">
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center text-primary-foreground text-xl font-semibold ${
+                isPro
+                  ? "ring-4 ring-[hsl(var(--pro-gold)/0.3)] bg-gradient-to-br from-[hsl(var(--pro-gold))] to-[hsl(25,80%,50%)]"
+                  : "ring-4 ring-primary/10 bg-gradient-to-br from-primary to-accent"
+              }`}>
+                {avatarInitial}
+              </div>
+              {isPro && (
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[hsl(var(--pro-gold))] to-[hsl(25,80%,50%)] flex items-center justify-center border-2 border-background shadow-sm">
+                  <Crown className="w-3 h-3 text-white" />
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <h2 className="text-lg font-semibold text-foreground truncate">{displayName}</h2>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-xs px-2 py-0.5 rounded-full font-medium uppercase tracking-wider ${
-                  isPro ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"
-                }`}>
-                  {isPro ? "Pro" : "Free Plan"}
-                </span>
+                {isPro ? (
+                  <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-gradient-to-r from-[hsl(var(--pro-gold))] to-[hsl(25,80%,50%)] text-white shadow-sm">
+                    <Crown className="w-3 h-3" />
+                    Pro 会员
+                  </span>
+                ) : (
+                  <span className="text-xs px-2 py-0.5 rounded-full font-medium uppercase tracking-wider bg-secondary text-muted-foreground">
+                    Free Plan
+                  </span>
+                )}
               </div>
             </div>
             <button onClick={() => setShowEditProfile(true)}

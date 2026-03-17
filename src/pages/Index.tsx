@@ -84,7 +84,7 @@ const Index = () => {
       <div className="h-12" />
 
       <div className="px-4 max-w-md mx-auto space-y-6">
-        <HomeHeader userName={displayName.charAt(0)} dateLabel={dateLabel} unreadCount={unreadCount} />
+        <HomeHeader userName={displayName.charAt(0)} dateLabel={dateLabel} unreadCount={unreadCount} isPro={profile?.is_pro ?? false} />
 
         <div className="flex justify-center animate-card-appear">
           <div className={cn(isFasting && "animate-breathing")} style={{ animationDuration: "3s" }}>

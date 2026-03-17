@@ -69,12 +69,19 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
             className="bg-card rounded-2xl p-4 shadow-card card-hover relative overflow-hidden animate-card-appear"
             style={{ animationDelay: `${i * 80}ms` }}
           >
-            {card.isLocked && (
+            {card.isLocked ? (
               <div className="absolute inset-0 bg-card/80 backdrop-blur-[2px] z-10 flex items-center justify-center rounded-2xl">
                 <div className="flex flex-col items-center gap-1">
                   <Lock className="w-4 h-4 text-muted-foreground" />
                   <span className="text-[10px] text-muted-foreground">Pro 功能</span>
                 </div>
+              </div>
+            ) : card.wasLocked && (
+              <div className="absolute top-2 right-2 z-10">
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[8px] font-bold bg-gradient-to-r from-[hsl(var(--pro-gold))] to-[hsl(25,80%,50%)] text-white">
+                  <Crown className="w-2 h-2" />
+                  PRO
+                </span>
               </div>
             )}
             <div className="flex items-center gap-2 mb-2">
