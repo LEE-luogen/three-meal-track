@@ -50,6 +50,7 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       subtext: unlockedCount > 0 ? "继续解锁更多" : "开始你的旅程",
       colorVar: "pro-gold",
       isLocked: false,
+      isProFeature: false,
     },
     {
       icon: Users,
