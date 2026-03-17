@@ -17,20 +17,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated, loading } = useAuth();
   const { currentStep } = useOnboardingStore();
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <Navigate to="/auth" replace />;
-  }
 
   if (currentStep !== 'completed') {
     return <Navigate to="/onboarding" replace />;
@@ -39,19 +26,8 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
-const AuthRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
-  if (loading) return null;
-  if (isAuthenticated) return <Navigate to="/" replace />;
-  return <AuthPage />;
-};
-
 const OnboardingRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
   const { currentStep } = useOnboardingStore();
-
-  if (loading) return null;
-  if (!isAuthenticated) return <Navigate to="/auth" replace />;
   if (currentStep === 'completed') return <Navigate to="/" replace />;
   return <OnboardingPage />;
 };
