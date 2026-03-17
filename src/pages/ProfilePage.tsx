@@ -1,4 +1,4 @@
-import { Settings, ChevronRight, LogOut } from "lucide-react";
+import { Settings, ChevronRight, LogOut, Crown } from "lucide-react";
 import { useProfile } from "@/hooks/useProfile";
 import { useAchievements } from "@/hooks/useAchievements";
 import { useWeightLogs } from "@/hooks/useWeightLogs";
