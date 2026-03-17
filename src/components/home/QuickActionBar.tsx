@@ -1,4 +1,4 @@
-import { ClipboardList, Bell, History, Settings } from "lucide-react";
+import { ClipboardList, History, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface QuickAction {
@@ -14,13 +14,12 @@ interface QuickActionBarProps {
 export function QuickActionBar({ className }: QuickActionBarProps) {
   const actions: QuickAction[] = [
     { icon: ClipboardList, label: "补录" },
-    { icon: Bell, label: "提醒" },
     { icon: History, label: "历史" },
     { icon: Settings, label: "设置" },
   ];
 
   return (
-    <div className={cn("grid grid-cols-4 gap-2", className)}>
+    <div className={cn("grid grid-cols-3 gap-2", className)}>
       {actions.map((action) => {
         const Icon = action.icon;
         return (
