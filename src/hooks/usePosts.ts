@@ -103,11 +103,7 @@ export function usePosts(topicFilter?: string) {
       post_id: postId,
       content,
     });
-    if (!error) {
-      // Increment comments count
-      await supabase.rpc('increment_post_comments' as any, { post_id_input: postId }).catch(() => {});
-      await fetchPosts();
-    }
+    if (!error) await fetchPosts();
     return { error: error?.message ?? null };
   }, [user, fetchPosts]);
 

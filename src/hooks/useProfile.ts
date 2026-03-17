@@ -40,11 +40,11 @@ export function useProfile() {
 
   useEffect(() => { fetchProfile(); }, [fetchProfile]);
 
-  const updateProfile = useCallback(async (updates: Partial<Profile>) => {
+  const updateProfile = useCallback(async (updates: Record<string, unknown>) => {
     if (!user) return { error: 'Not authenticated' };
     const { error } = await supabase
       .from('profiles')
-      .update(updates)
+      .update(updates as any)
       .eq('user_id', user.id);
     if (!error) await fetchProfile();
     return { error: error?.message ?? null };
