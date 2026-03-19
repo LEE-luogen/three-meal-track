@@ -130,6 +130,7 @@ const Index = () => {
         )}
 
         <TodayMealsOverview />
+        <ProInsightsSection />
         <AIIntelligenceCard />
         <DataCardsGrid />
         <QuickActionBar />
