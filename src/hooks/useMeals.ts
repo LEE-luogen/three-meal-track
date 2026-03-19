@@ -81,9 +81,10 @@ export function useMeals(date?: string) {
   const todayProtein = meals.reduce((sum, m) => sum + (m.protein_g || 0), 0);
   const todayCarbs = meals.reduce((sum, m) => sum + (m.carbs_g || 0), 0);
   const todayFat = meals.reduce((sum, m) => sum + (m.fat_g || 0), 0);
+  const todayFiber = meals.reduce((sum, m) => sum + (m.fiber_g || 0), 0);
 
   return {
     meals, loading, addMeal, updateMeal, deleteMeal, refetch: fetchMeals,
-    todayCalories, todayProtein, todayCarbs, todayFat,
+    todayCalories, todayProtein, todayCarbs, todayFat, todayFiber,
   };
 }

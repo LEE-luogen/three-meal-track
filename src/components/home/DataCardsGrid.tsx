@@ -1,4 +1,4 @@
-import { Apple, Activity, Trophy, Users, Lock, Crown } from "lucide-react";
+import { Apple, Activity, Users, Lock, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMeals } from "@/hooks/useMeals";
 import { useAchievements } from "@/hooks/useAchievements";
@@ -40,15 +40,6 @@ export function DataCardsGrid({ className }: DataCardsGridProps) {
       value: "--",
       subtext: "需要更多数据",
       colorVar: "warning",
-      isLocked: false,
-      isProFeature: false,
-    },
-    {
-      icon: Trophy,
-      label: "成就徽章",
-      value: `${unlockedCount}/${totalCount}`,
-      subtext: unlockedCount > 0 ? "继续解锁更多" : "开始你的旅程",
-      colorVar: "pro-gold",
       isLocked: false,
       isProFeature: false,
     },

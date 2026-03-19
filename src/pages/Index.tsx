@@ -6,6 +6,7 @@ import { TimeInfoCards } from "@/components/home/TimeInfoCards";
 import { TodayMealsOverview } from "@/components/home/TodayMealsOverview";
 import { AIIntelligenceCard } from "@/components/home/AIIntelligenceCard";
 import { DataCardsGrid } from "@/components/home/DataCardsGrid";
+import { ProInsightsSection } from "@/components/home/ProInsightsSection";
 import { QuickActionBar } from "@/components/home/QuickActionBar";
 import { BottomNavigation } from "@/components/navigation/BottomNavigation";
 import { DebugPanel } from "@/components/debug/DebugPanel";
@@ -129,6 +130,7 @@ const Index = () => {
         )}
 
         <TodayMealsOverview />
+        <ProInsightsSection />
         <AIIntelligenceCard />
         <DataCardsGrid />
         <QuickActionBar />
